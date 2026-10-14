@@ -26,6 +26,19 @@ export const PLATE_IMAGES: Partial<Record<PlateVariant, string>> = {
   // anchor: '/img/vessel-at-anchor.jpg',
 };
 
+/**
+ * Show the "Illustrative placeholder" chip on placeholder images.
+ *
+ * Off for the live site so it doesn't advertise itself as a draft to
+ * customers. Set to true while reviewing internally to make it obvious at a
+ * glance which images are still placeholders.
+ *
+ * The images themselves are unchanged either way — nothing is passed off as
+ * a real photograph, and each one still carries "Illustration of…" alt text
+ * for screen readers and search engines.
+ */
+export const SHOW_PLACEHOLDER_CHIP = false;
+
 /** Descriptive alt text, used by both the SVG and photo branches. */
 export const PLATE_LABELS: Record<PlateVariant, string> = {
   ship: 'Illustration of a container vessel at sea',

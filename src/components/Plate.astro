@@ -1,6 +1,6 @@
 ---
 import type { PlateVariant } from '../data/services';
-import { PLATE_IMAGES, PLATE_LABELS } from '../data/plates';
+import { PLATE_IMAGES, PLATE_LABELS, SHOW_PLACEHOLDER_CHIP } from '../data/plates';
 
 interface Props {
   variant: PlateVariant;
@@ -238,7 +238,7 @@ const a11y = decorative
   }
 
   {
-    chip && !photo && (
+    SHOW_PLACEHOLDER_CHIP && chip && !photo && (
       <div class="absolute right-2.5 top-2.5 rounded-full bg-navy/85 px-2.5 py-0.5 text-[11px] font-semibold tracking-wide text-white">
         Illustrative placeholder
       </div>

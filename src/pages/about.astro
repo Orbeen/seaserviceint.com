@@ -6,7 +6,7 @@ import Button from '../components/Button.astro';
 import Eyebrow from '../components/Eyebrow.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import CtaBand from '../components/CtaBand.astro';
-import { COMPANY, DRAFTED, TRUST } from '../data/company';
+import { COMPANY, DRAFTED } from '../data/company';
 
 const approach = [
   {
@@ -102,8 +102,7 @@ const approach = [
         <h3 class="text-navy">Company history</h3>
         <p class="text-[17px]">{DRAFTED.history}</p>
         <p class="mt-2 text-[14px] text-muted">
-          Founding year {TRUST.foundedYear} is stated on SeaServe's current website. Leadership profiles and any
-          certifications will be added once supplied.
+          Operating from Chittagong, serving {COMPANY.ports.join(', ')}.
         </p>
       </div>
     </div>

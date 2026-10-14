@@ -60,11 +60,16 @@ const related = service.related.map((slug) => SERVICE_BY_SLUG.get(slug)!);
           )
         }
 
+        {/* Shown for the 4 services SeaServe lists by name without describing.
+            Invites the enquiry instead of inventing scope. Clear
+            needsConfirmation in services.ts once real scope is supplied. */}
         {
           service.needsConfirmation && (
-            <div class="rounded-xl border-[1.5px] border-dashed border-teal bg-white px-5 py-4.5">
-              <strong class="text-navy">Details to be confirmed.</strong> This page reflects only what SeaServe's
-              current website states about this service. A full scope description will be added before launch.
+            <div class="rounded-xl border border-line bg-pale px-5 py-4.5">
+              <p>
+                <strong class="text-navy">Tell us what you need.</strong> Scope for this service is arranged per
+                vessel and requirement — send us the details and our team will confirm what we can cover.
+              </p>
             </div>
           )
         }
