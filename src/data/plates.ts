@@ -13,23 +13,35 @@ import type { PlateVariant } from './services';
  * shift. Variants convert independently, so partial photography is fine —
  * and each one's "Illustrative placeholder" chip disappears automatically.
  */
+/**
+ * Every variant now has a photograph, from two sources:
+ *
+ *   Unsplash stock (free commercial use, no attribution required), each
+ *   checked by eye — guessing photo IDs had roughly a 20% hit rate, and the
+ *   rejects included a leisure yacht, a surfer, a road truck carrying another
+ *   firm's branding and an office desk:
+ *     ship, port, docs, supply, repair
+ *
+ *   AI-generated to order, for the subjects no suitable stock photo existed
+ *   for. These are synthetic images of generic vessels and workers, not
+ *   photographs of real events:
+ *     crew, survey, spares, clean, anchor
+ *
+ * Neither source shows SeaServe's own work, so real company photography
+ * remains the right end state. Replacing one is a single line here.
+ */
 export const PLATE_IMAGES: Partial<Record<PlateVariant, string>> = {
-  // Stock photography (Unsplash License — free commercial use, no attribution
-  // required). Each was checked by eye before use: guessing photo IDs has a
-  // ~20% hit rate, and the rejects included a leisure yacht, a surfer, a
-  // road truck carrying another firm's branding, and an office desk.
-  //
-  // These show OTHER companies' vessels and facilities. Replace with real
-  // SeaServe photography when available — that is still the right end state.
-  ship: '/img/ship.jpg', //   aerial container vessel underway, pilot boat alongside
-  port: '/img/port.jpg', //   container vessels alongside, gantry cranes
-  docs: '/img/docs.jpg', //   aerial container terminal
-  supply: '/img/supply.jpg', // warehouse, palletised stores
-  repair: '/img/repair.jpg', // welder at work
+  ship: '/img/ship.jpg', //     stock — aerial container vessel underway
+  port: '/img/port.jpg', //     stock — container vessels alongside, gantry cranes
+  docs: '/img/docs.jpg', //     stock — aerial container terminal
+  supply: '/img/supply.jpg', // stock — warehouse, palletised stores
+  repair: '/img/repair.jpg', // stock — welder at work
 
-  // Still illustrations — no suitable free photo found for these subjects:
-  // crew (gangway/crew change), clean (hull cleaning), spares (machinery
-  // spares), survey (hull inspection), anchor (vessel at anchorage).
+  crew: '/img/crew.jpg', //     generated — crew climbing a gangway
+  survey: '/img/survey.jpg', // generated — surveyor inspecting a hull in dry dock
+  spares: '/img/spares.jpg', // generated — marine spares on a workbench
+  clean: '/img/clean.jpg', //   generated — hull being pressure washed
+  anchor: '/img/anchor.jpg', // generated — bulk carrier at anchor
 };
 
 /**
@@ -57,9 +69,9 @@ export const PLATE_LABELS: Record<PlateVariant, string> = {
   supply: 'Palletised stores on racking in a supply warehouse',
   repair: 'A welder working on steel, sparks flying from the arc',
 
-  crew: 'Illustration of a gangway and crew at a vessel',
-  clean: 'Illustration of cleaning along a vessel hull',
-  spares: 'Illustration of machinery spares beside a vessel',
-  survey: 'Illustration of a marine survey inspection of a hull',
-  anchor: 'Illustration of a vessel at anchor',
+  crew: 'Seafarers in coveralls and hard hats climbing an accommodation ladder up a ship’s hull',
+  clean: 'Workers pressure-washing marine growth from a vessel hull in dry dock',
+  spares: 'Marine engineering spares on a workbench — bearings, valves, impellers and fittings',
+  survey: 'A surveyor in a hard hat and high-visibility vest inspecting a ship’s hull in dry dock',
+  anchor: 'A bulk carrier lying at anchor at sunset, anchor chain running into calm water',
 };
