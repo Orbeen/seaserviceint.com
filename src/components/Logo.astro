@@ -1,0 +1,30 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: cls = '' } = Astro.props;
+---
+
+<a
+  href="/"
+  aria-label="SeaServe Int. — home"
+  class={`flex items-center gap-3 text-[22px] font-bold tracking-tight text-white ${cls}`}
+>
+  <svg
+    aria-hidden="true"
+    width="34"
+    height="34"
+    viewBox="0 0 34 34"
+    fill="none"
+    stroke="#36C6BB"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="shrink-0"
+  >
+    <circle cx="17" cy="17" r="14"></circle>
+    <path d="M17 5v24M5 17h24" opacity="0.45"></path>
+    <path d="M17 8l4 9-4 9-4-9z" fill="#36C6BB" stroke="none"></path>
+  </svg>
+  <span>SeaServe <span class="text-aqua">Int.</span></span>
+</a>

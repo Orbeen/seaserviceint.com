@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Button from '../components/Button.astro';
+import Form from '../components/form/Form.astro';
+import { COMPANY } from '../data/company';
+---
+
+<BaseLayout
+  title="Contact"
+  description="Contact SeaServe Int. in Chittagong, Bangladesh. Email office@seaservint.com or call +880 1617 771507 about your vessel, port call or service requirement."
+  current="contact"
+  localBusiness
+>
+  <section class="bg-navy px-6 pb-[72px] pt-16">
+    <div class="container-site flex flex-col gap-5">
+      <Breadcrumb trail={[{ label: 'Contact' }]} />
+      <h1 class="max-w-[780px] text-white">Contact SeaServe</h1>
+      <p class="max-w-[620px] text-[19px] text-on-navy-str">
+        Tell us about your vessel, port call, or service requirement. Our team can review your inquiry and help
+        identify the appropriate next steps.
+      </p>
+    </div>
+  </section>
+
+  <section class="px-6 pb-24 pt-20">
+    <div class="container-site flex flex-wrap items-start gap-12">
+      <aside class="flex min-w-0 flex-[1_1_340px] flex-col gap-6 rounded-[--radius-panel] bg-pale p-9">
+        <h2 class="text-[26px] leading-snug text-navy">Our office</h2>
+
+        <div class="flex flex-col gap-1.5">
+          <h3 class="text-[13px] uppercase tracking-[0.12em] text-teal-dark">Address</h3>
+          <address class="font-semibold text-navy">{COMPANY.address.full}</address>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <h3 class="text-[13px] uppercase tracking-[0.12em] text-teal-dark">Email</h3>
+          <a href={`mailto:${COMPANY.email}`} class="font-semibold text-navy underline">{COMPANY.email}</a>
+          <a href={`mailto:${COMPANY.emailAlt}`} class="font-semibold text-navy underline">{COMPANY.emailAlt}</a>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <h3 class="text-[13px] uppercase tracking-[0.12em] text-teal-dark">Telephone</h3>
+          <a href={`tel:${COMPANY.telHref}`} class="font-semibold text-navy">{COMPANY.tel}</a>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <h3 class="text-[13px] uppercase tracking-[0.12em] text-teal-dark">Fax</h3>
+          <span class="font-semibold text-navy">{COMPANY.fax}</span>
+        </div>
+
+        <div class="flex flex-col gap-2.5 border-t border-[#BFD9DF] pt-5.5">
+          <p>Have a specific vessel or port call in mind?</p>
+          <Button href="/request" class="w-full">Request a Service</Button>
+        </div>
+      </aside>
+
+      <div class="flex min-w-0 flex-[2_1_480px] flex-col gap-6">
+        <h2 class="text-navy" style="font-size:clamp(26px,3vw,34px)">Send us a message</h2>
+        <Form mode="contact" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

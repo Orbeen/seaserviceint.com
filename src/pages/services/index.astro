@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { SERVICES } from '../../data/services';
+---
+
+<BaseLayout
+  title="Maritime Services"
+  description="Port agency, crew change, ship supply, repair, cleaning, spares, husbandry, export/import and marine survey services at Bangladeshi ports."
+  current="services"
+>
+  <PageHero
+    title="Complete Support for Your Vessel's Needs"
+    lede="From port agency coordination to ship supplies and technical assistance, explore the services available through SeaServe Int."
+    variant="ship"
+    minHeight="380px"
+    trail={[{ label: 'Services' }]}
+  />
+
+  <section class="px-6 py-20">
+    <div class="container-site flex flex-col gap-5">
+      {SERVICES.map((s) => <ServiceCard service={s} layout="row" />)}
+    </div>
+  </section>
+
+  <CtaBand
+    title="Not sure which service you need?"
+    lede="Describe your vessel and requirement and our team will point you to the right support."
+    secondary={false}
+  />
+</BaseLayout>

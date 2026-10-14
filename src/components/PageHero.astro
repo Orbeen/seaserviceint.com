@@ -1,0 +1,31 @@
+---
+import Plate from './Plate.astro';
+import Breadcrumb from './Breadcrumb.astro';
+import type { PlateVariant } from '../data/services';
+
+interface Props {
+  title: string;
+  lede?: string;
+  variant?: PlateVariant;
+  minHeight?: string;
+  trail?: { label: string; href?: string }[];
+}
+
+const { title, lede, variant = 'ship', minHeight = '420px', trail } = Astro.props;
+---
+
+<section class="relative flex items-center overflow-hidden bg-navy" style={`min-height:${minHeight}`}>
+  <div class="absolute inset-0">
+    <Plate variant={variant} dim={0.1} chip={false} decorative />
+  </div>
+  <div
+    class="absolute inset-0"
+    style="background: linear-gradient(90deg, rgba(8,43,69,0.94) 0%, rgba(8,43,69,0.75) 55%, rgba(8,43,69,0.3) 100%)"
+  >
+  </div>
+  <div class="container-site relative flex flex-col gap-5 py-[72px]">
+    {trail && <Breadcrumb trail={trail} />}
+    <h1 class="max-w-[780px] text-white">{title}</h1>
+    {lede && <p class="max-w-[640px] text-[19px] text-on-navy-str">{lede}</p>}
+  </div>
+</section>

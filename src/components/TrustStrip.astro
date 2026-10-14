@@ -1,0 +1,35 @@
+---
+import { TRUST, YEARS_OPERATING } from '../data/company';
+
+/**
+ * ⚠️  All three claims below are UNVERIFIED. They come from the competitor
+ * reference and were included at the client's direction. Edit the values in
+ * src/data/company.ts, or delete this component's usage in index.astro to
+ * remove the strip entirely.
+ *
+ * The years figure is computed at build time, so it cannot go stale the way
+ * the live site's "eight years of experience" did.
+ */
+const items = [
+  { figure: TRUST.availability, label: 'Service availability' },
+  { figure: `${TRUST.responseMinutes} min`, label: 'Target response time' },
+  { figure: `${YEARS_OPERATING} years`, label: `Operating since ${TRUST.foundedYear}` },
+  { figure: '4 ports', label: 'Chattogram, Mongla, Payra, Matarbari' },
+];
+---
+
+<section class="border-y border-line bg-pale" aria-label="Service commitments">
+  <div
+    class="container-site grid gap-6 py-10"
+    style="grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr))"
+  >
+    {
+      items.map((it) => (
+        <div class="flex flex-col gap-1">
+          <span class="text-[30px] font-bold leading-tight tracking-tight text-navy">{it.figure}</span>
+          <span class="text-[15px] text-muted">{it.label}</span>
+        </div>
+      ))
+    }
+  </div>
+</section>

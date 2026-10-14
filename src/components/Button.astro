@@ -1,0 +1,31 @@
+---
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'outline';
+  type?: 'button' | 'submit';
+  class?: string;
+}
+
+const { href, variant = 'primary', type = 'button', class: cls = '' } = Astro.props;
+
+// min-h-[52px] keeps every target well above the 44px floor.
+const base =
+  'inline-flex items-center justify-center min-h-[52px] px-7 rounded-[--radius-btn] font-semibold transition-colors cursor-pointer text-center';
+const styles = {
+  primary: 'bg-teal text-white hover:bg-teal-dark border-0',
+  outline: 'border-[1.5px] border-white/70 text-white hover:bg-white/15 bg-transparent',
+};
+const cx = `${base} ${styles[variant]} ${cls}`;
+---
+
+{
+  href ? (
+    <a href={href} class={cx}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class={cx}>
+      <slot />
+    </button>
+  )
+}

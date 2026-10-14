@@ -1,0 +1,18 @@
+---
+interface Props {
+  /** On navy, the rule and text use aqua (6.90:1). On light, teal (4.81:1). */
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+
+const { tone = 'light', class: cls = '' } = Astro.props;
+const color = tone === 'dark' ? 'text-aqua' : 'text-teal';
+const rule = tone === 'dark' ? 'bg-aqua' : 'bg-teal';
+---
+
+<p
+  class={`flex items-center gap-3 text-[13px] font-semibold uppercase tracking-[0.16em] ${color} ${cls}`}
+>
+  <span class={`h-0.5 w-8 shrink-0 ${rule}`} aria-hidden="true"></span>
+  <slot />
+</p>

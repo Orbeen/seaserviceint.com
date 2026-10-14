@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Form from '../components/form/Form.astro';
+
+const steps = [
+  'Share your requirement with the details on the left.',
+  'Our team reviews it and confirms the service details with you.',
+  'Support is coordinated and you receive updates. Actual steps vary by service.',
+];
+---
+
+<BaseLayout
+  title="Request a Service"
+  description="Request maritime services from SeaServe Int. Tell us your vessel, port and requirement and our team will review your inquiry."
+  current="request"
+>
+  <PageHero
+    title="What Does Your Vessel Need?"
+    lede="Tell us about your vessel, port call, or service requirement. Our team can review your inquiry and help identify the appropriate next steps."
+    variant="ship"
+    minHeight="360px"
+    trail={[{ label: 'Request a Service' }]}
+  />
+
+  <section class="px-6 pb-24 pt-20">
+    <div class="container-site flex flex-wrap items-start gap-12">
+      <div class="flex min-w-0 flex-[2_1_520px] flex-col gap-6">
+        <h2 class="text-navy" style="font-size:clamp(26px,3vw,34px)">Service request</h2>
+        <Form mode="request" />
+      </div>
+
+      <aside
+        class="flex min-w-0 flex-[1_1_320px] flex-col gap-5.5 rounded-[--radius-panel] bg-pale p-8 nav:sticky"
+        style="top: calc(var(--header-h) + 16px)"
+      >
+        <h2 class="text-[22px] leading-snug text-navy">What happens next</h2>
+        <ol class="m-0 flex list-none flex-col gap-4.5 p-0">
+          {
+            steps.map((s, i) => (
+              <li class="flex gap-3.5">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal font-bold text-white">
+                  {i + 1}
+                </span>
+                <span>{s}</span>
+              </li>
+            ))
+          }
+        </ol>
+        <div class="flex flex-col gap-1.5 border-t border-[#BFD9DF] pt-5">
+          <p>Prefer to talk first?</p>
+          <a href="/contact" class="font-semibold text-teal-dark underline">Go to the contact page</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>

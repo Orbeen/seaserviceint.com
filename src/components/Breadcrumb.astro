@@ -1,0 +1,36 @@
+---
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  trail: Crumb[];
+}
+
+const { trail } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb">
+  <ol class="m-0 flex list-none flex-wrap items-center gap-2 p-0 text-[14px] text-on-navy">
+    <li><a href="/" class="hover:text-aqua">Home</a></li>
+    {
+      trail.map((c, i) => (
+        <>
+          <li aria-hidden="true">/</li>
+          <li>
+            {c.href && i < trail.length - 1 ? (
+              <a href={c.href} class="hover:text-aqua">
+                {c.label}
+              </a>
+            ) : (
+              <span class="font-semibold text-white" aria-current="page">
+                {c.label}
+              </span>
+            )}
+          </li>
+        </>
+      ))
+    }
+  </ol>
+</nav>

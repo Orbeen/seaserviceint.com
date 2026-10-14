@@ -1,0 +1,253 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Plate from '../components/Plate.astro';
+import Button from '../components/Button.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import CtaBand from '../components/CtaBand.astro';
+import TrustStrip from '../components/TrustStrip.astro';
+import { SERVICES } from '../data/services';
+import { COMPANY } from '../data/company';
+
+const steps = [
+  { n: '01', title: 'Share Your Requirement', body: 'Tell us about the vessel, port call or service you need.' },
+  { n: '02', title: 'Confirm Service Details', body: 'We review the scope with you and confirm what is required.' },
+  { n: '03', title: 'Coordinate the Support', body: 'Our team arranges the agency, supply, crew or technical support.' },
+  { n: '04', title: 'Complete and Update', body: 'We complete the work and keep you informed along the way.' },
+];
+
+const why = [
+  {
+    title: 'Practical Service Coordination',
+    body: 'Agency, supply, crew and repair support coordinated together by one team.',
+    icon: 'clock',
+  },
+  {
+    title: 'Attention to Vessel Requirements',
+    body: 'Supplies and support are adjusted to the needs of each vessel.',
+    icon: 'anchor',
+  },
+  {
+    title: 'Clear Communication',
+    body: 'Straightforward updates from the first inquiry to the completed service.',
+    icon: 'chat',
+  },
+  {
+    title: 'Flexible Maritime Support',
+    body: 'Scope a single requirement or combine several services for one port call.',
+    icon: 'waves',
+  },
+];
+
+const galleryPreview = [
+  { variant: 'ship' as const, caption: 'Ships at port', span: true },
+  { variant: 'crew' as const, caption: 'Vessel boarding and port attendance', span: false },
+  { variant: 'supply' as const, caption: 'Marine supply operations', span: false },
+  { variant: 'repair' as const, caption: 'Ship maintenance and repair', span: false },
+  { variant: 'survey' as const, caption: 'Marine inspection activities', span: false },
+];
+---
+
+<BaseLayout
+  title="SeaServe Int. — Shipping Agency & Ship Supply in Chittagong, Bangladesh"
+  description="Maritime services for shipowners, charterers, managers and vessel operators: port agency, crew change, ship supply, repair and survey support at Bangladeshi ports."
+  current="home"
+  localBusiness
+>
+  <!-- HERO -->
+  <section class="relative flex min-h-[700px] items-center overflow-hidden bg-navy">
+    <div class="absolute inset-0">
+      <Plate variant="ship" dim={0.15} chip={false} decorative />
+    </div>
+    <div
+      class="absolute inset-0"
+      style="background: linear-gradient(90deg, rgba(8,43,69,0.94) 0%, rgba(8,43,69,0.72) 46%, rgba(8,43,69,0.12) 100%)"
+    >
+    </div>
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 600 160"
+      class="absolute bottom-10 right-[4%] w-[min(520px,50%)] opacity-70"
+      fill="none"
+      stroke="#36C6BB"
+      stroke-width="1.5"
+      stroke-dasharray="5 7"
+    >
+      <path d="M10 140 C 140 20, 300 150, 430 70 S 560 30, 590 20"></path>
+      <circle cx="10" cy="140" r="5" fill="#36C6BB" stroke="none"></circle>
+      <circle cx="590" cy="20" r="5" fill="#36C6BB" stroke="none"></circle>
+    </svg>
+
+    <div class="container-site relative flex flex-col gap-7 py-[110px]">
+      <Eyebrow tone="dark">Chittagong, Bangladesh</Eyebrow>
+      <h1 class="max-w-[760px] text-white" style="font-size:clamp(38px,5.4vw,70px);line-height:1.04">
+        Your Trusted Partner for Maritime Services.
+      </h1>
+      <p class="max-w-[580px] text-[19px] text-on-navy-str">
+        Supporting vessel operations with practical maritime services, ship supplies, crew coordination, and
+        port-side assistance in Bangladesh.
+      </p>
+      <div class="flex flex-wrap gap-3.5">
+        <Button href="/services">Explore Our Services</Button>
+        <Button href="/contact" variant="outline">Contact Our Team</Button>
+      </div>
+      <p class="mt-2 text-[14px] font-semibold tracking-[0.08em] text-aqua">
+        Marine Services &bull; Ship Supply &bull; Vessel Support
+      </p>
+    </div>
+  </section>
+
+  <TrustStrip />
+
+  <!-- SERVICES -->
+  <section class="bg-pale px-6 py-24">
+    <div class="container-site flex flex-col gap-12">
+      <SectionHeading
+        eyebrow="Our services"
+        title="Complete Support for Your Vessel's Needs"
+        lede="From port agency coordination to ship supplies and technical assistance, explore the services available through SeaServe Int."
+      />
+      <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr))">
+        {SERVICES.map((s) => <ServiceCard service={s} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="bg-white px-6 py-[104px]">
+    <div
+      class="container-site grid items-center gap-16"
+      style="grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr))"
+    >
+      <div class="relative h-[520px] overflow-hidden rounded-[--radius-panel]">
+        <Plate variant="ship" />
+      </div>
+      <div class="flex flex-col gap-5">
+        <Eyebrow>About SeaServe</Eyebrow>
+        <h2 class="text-navy">Maritime Support Built Around Your Operations</h2>
+        <p class="text-[18px]">
+          {COMPANY.name} is a Chittagong-based maritime services company. We support shipowners, charterers,
+          managers and vessel operators with shipping agency, crew change, ship supply, repair, cleaning and
+          spares services.
+        </p>
+        <p>
+          Our team handles the practical side of a vessel's requirements, so masters and operators can keep their
+          attention on the voyage.
+        </p>
+        <div><Button href="/about">About SeaServe</Button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="bg-navy px-6 py-24 text-white">
+    <div class="container-site flex flex-col gap-12">
+      <SectionHeading
+        eyebrow="How we work"
+        title="How We Support Vessel Operations"
+        lede="A general inquiry and coordination flow. The actual steps vary by service."
+        tone="dark"
+      />
+      <ol class="m-0 grid list-none gap-7 p-0" style="grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr))">
+        {
+          steps.map((s) => (
+            <li class="flex flex-col gap-3 border-t-2 border-aqua pt-5.5">
+              <span class="text-[14px] font-bold tracking-[0.1em] text-aqua">{s.n}</span>
+              <h3 class="text-[20px]">{s.title}</h3>
+              <p class="text-on-navy">{s.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- GALLERY PREVIEW -->
+  <section class="bg-white px-6 py-24">
+    <div class="container-site flex flex-col gap-10">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <SectionHeading
+          eyebrow="Marine operations"
+          title="Marine Operations Gallery"
+          lede="Illustrative imagery for now. SeaServe project photographs will replace these placeholders."
+        />
+        <Button href="/gallery">View Gallery</Button>
+      </div>
+      <div
+        class="grid gap-4"
+        style="grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); grid-auto-rows: 250px"
+      >
+        {
+          galleryPreview.map((g) => (
+            <figure
+              class={`relative m-0 overflow-hidden rounded-[--radius-card] ${g.span ? 'row-span-2' : ''}`}
+            >
+              <Plate variant={g.variant} />
+              <figcaption
+                class="absolute inset-x-0 bottom-0 px-4.5 pb-4 pt-9 font-semibold text-white"
+                style="background: linear-gradient(0deg, rgba(8,43,69,0.85), rgba(8,43,69,0))"
+              >
+                {g.caption}
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section class="bg-pale px-6 py-24">
+    <div class="container-site flex flex-col gap-12">
+      <SectionHeading eyebrow="Why SeaServe" title="Reliable Support in a Demanding Maritime Environment" />
+      <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr))">
+        {
+          why.map((w) => (
+            <div class="flex flex-col gap-3.5 rounded-[--radius-card] bg-white p-7">
+              <svg
+                aria-hidden="true"
+                width="34"
+                height="34"
+                viewBox="0 0 34 34"
+                fill="none"
+                stroke="#087E8B"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                {w.icon === 'clock' && (
+                  <>
+                    <circle cx="17" cy="17" r="13" />
+                    <path d="M17 8v9l6 4" />
+                  </>
+                )}
+                {w.icon === 'anchor' && (
+                  <>
+                    <path d="M5 22h24l-4 7H9z" />
+                    <path d="M10 22V12h14v10" />
+                    <path d="M17 12V5" />
+                  </>
+                )}
+                {w.icon === 'chat' && <path d="M5 8h24v15H15l-6 5v-5H5z" />}
+                {w.icon === 'waves' && (
+                  <>
+                    <path d="M4 12c4-4 8 4 12 0s8 4 12 0" />
+                    <path d="M4 21c4-4 8 4 12 0s8 4 12 0" />
+                  </>
+                )}
+              </svg>
+              <h3 class="text-[20px] text-navy">{w.title}</h3>
+              <p>{w.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="What Does Your Vessel Need?"
+    lede="Tell us about your vessel, port call, or service requirement. Our team can review your inquiry and help identify the appropriate next steps."
+  />
+</BaseLayout>

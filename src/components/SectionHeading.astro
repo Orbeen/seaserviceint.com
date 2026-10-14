@@ -1,0 +1,21 @@
+---
+import Eyebrow from './Eyebrow.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+
+const { eyebrow, title, lede, tone = 'light', class: cls = '' } = Astro.props;
+const titleColor = tone === 'dark' ? 'text-white' : 'text-navy';
+const ledeColor = tone === 'dark' ? 'text-on-navy-str' : 'text-body';
+---
+
+<div class={`flex max-w-[720px] flex-col gap-3.5 ${cls}`}>
+  {eyebrow && <Eyebrow tone={tone}>{eyebrow}</Eyebrow>}
+  <h2 class={titleColor}>{title}</h2>
+  {lede && <p class={`text-[18px] ${ledeColor}`}>{lede}</p>}
+</div>

@@ -1,0 +1,297 @@
+---
+import { SERVICE_OPTIONS } from '../../data/services';
+
+interface Props {
+  /** quick = service sidebars, contact = /contact, request = /request */
+  mode: 'quick' | 'contact' | 'request';
+  /** Pre-selects the service on a service page. */
+  preset?: string;
+}
+
+const { mode, preset = '' } = Astro.props;
+
+const formName = mode === 'quick' ? 'quick-inquiry' : mode === 'contact' ? 'contact' : 'service-request';
+const submitLabel =
+  mode === 'quick' ? 'Send Inquiry' : mode === 'contact' ? 'Send Message' : 'Submit Request';
+
+type InputType = 'text' | 'email' | 'tel' | 'number' | 'date';
+
+type Field = {
+  id: string;
+  label: string;
+  kind: 'input' | 'select' | 'area';
+  type?: InputType;
+  required?: boolean;
+  optional?: boolean;
+  full?: boolean;
+  autocomplete?: string;
+  options?: { value: string; label: string }[];
+  /** Only shown when this service is selected (progressive enhancement). */
+  showFor?: string;
+};
+
+const vesselTypes = [
+  { value: '', label: 'Select a vessel type' },
+  { value: 'bulk', label: 'Bulk carrier' },
+  { value: 'container', label: 'Container ship' },
+  { value: 'general', label: 'General cargo' },
+  { value: 'tanker', label: 'Tanker' },
+  { value: 'other', label: 'Other' },
+];
+
+let fields: Field[] = [];
+
+if (mode === 'quick') {
+  fields = [
+    { id: 'name', label: 'Full name', kind: 'input', required: true, full: true, autocomplete: 'name' },
+    { id: 'email', label: 'Business email', kind: 'input', type: 'email', required: true, full: true, autocomplete: 'email' },
+    { id: 'message', label: 'How can we help?', kind: 'area', required: true, full: true },
+  ];
+} else if (mode === 'contact') {
+  fields = [
+    { id: 'name', label: 'Full name', kind: 'input', required: true, autocomplete: 'name' },
+    { id: 'company', label: 'Company name', kind: 'input', autocomplete: 'organization' },
+    { id: 'email', label: 'Business email', kind: 'input', type: 'email', required: true, autocomplete: 'email' },
+    { id: 'phone', label: 'Telephone', kind: 'input', type: 'tel', autocomplete: 'tel' },
+    { id: 'service', label: 'Service required', kind: 'select', options: SERVICE_OPTIONS },
+    { id: 'vessel', label: 'Vessel name', kind: 'input', optional: true },
+    { id: 'port', label: 'Port / location', kind: 'input' },
+    { id: 'message', label: 'Message', kind: 'area', required: true, full: true },
+  ];
+} else {
+  fields = [
+    { id: 'company', label: 'Company name', kind: 'input', required: true, autocomplete: 'organization' },
+    { id: 'name', label: 'Contact person', kind: 'input', required: true, autocomplete: 'name' },
+    { id: 'email', label: 'Business email', kind: 'input', type: 'email', required: true, autocomplete: 'email' },
+    { id: 'phone', label: 'Telephone', kind: 'input', type: 'tel', autocomplete: 'tel' },
+    { id: 'service', label: 'Required service', kind: 'select', required: true, options: SERVICE_OPTIONS },
+    { id: 'vessel', label: 'Vessel name', kind: 'input', required: true },
+    { id: 'vesselType', label: 'Vessel type', kind: 'select', optional: true, options: vesselTypes },
+    { id: 'port', label: 'Port or location', kind: 'input', required: true },
+    { id: 'date', label: 'Estimated service date', kind: 'input', type: 'date', optional: true },
+    // Conditional fields are rendered in HTML for every service and REVEALED
+    // by JS. Injecting them would hide them from Netlify's form parser and
+    // make them unreachable without JS.
+    {
+      id: 'crewAction',
+      label: 'Crew change type',
+      kind: 'select',
+      optional: true,
+      showFor: 'crew-sign-on-off',
+      options: [
+        { value: '', label: 'Select' },
+        { value: 'on', label: 'Sign on' },
+        { value: 'off', label: 'Sign off' },
+        { value: 'both', label: 'Sign on and sign off' },
+      ],
+    },
+    { id: 'crewCount', label: 'Number of crew', kind: 'input', type: 'number', optional: true, showFor: 'crew-sign-on-off' },
+    {
+      id: 'supplyType',
+      label: 'Supply category',
+      kind: 'select',
+      optional: true,
+      full: true,
+      showFor: 'general-ship-supply',
+      options: [
+        { value: '', label: 'Select a category' },
+        { value: 'fresh', label: 'Fresh provisions' },
+        { value: 'bonded', label: 'Bonded stores' },
+        { value: 'deck', label: 'Deck stores' },
+        { value: 'engine', label: 'Engine stores' },
+        { value: 'electrical', label: 'Electrical stores' },
+        { value: 'cabin', label: 'Cabin supplies' },
+        { value: 'general', label: 'General marine supplies' },
+      ],
+    },
+    { id: 'partRef', label: 'Part description or reference', kind: 'input', optional: true, full: true, showFor: 'ship-spares' },
+    { id: 'message', label: 'Detailed message', kind: 'area', required: true, full: true },
+  ];
+}
+
+const inputCls =
+  'w-full min-h-[48px] px-3.5 py-3 rounded-[--radius-btn] border-[1.5px] border-[#8FA9B3] bg-white text-body text-[16px] aria-[invalid=true]:border-error';
+---
+
+<form
+  name={formName}
+  method="POST"
+  action="/thank-you"
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  data-form
+  class="flex flex-col gap-5"
+>
+  {/* Netlify injects form-name itself when it processes data-netlify="true" —
+      adding it by hand risks a duplicate field. */}
+
+  {/* Quick mode has no service select, so the page's service travels as a
+      hidden field — otherwise a sidebar inquiry arrives without saying which
+      service it is about. */}
+  {mode === 'quick' && preset && <input type="hidden" name="service" value={preset} />}
+
+  {/* Honeypot. Netlify documents the attribute but ships no CSS to hide it,
+      so we hide it ourselves and keep it out of the tab order. */}
+  <div class="absolute h-0 w-0 overflow-hidden" aria-hidden="true">
+    <label for={`bot-field-${mode}`}>Do not fill this in</label>
+    <input id={`bot-field-${mode}`} name="bot-field" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div
+    role="alert"
+    data-error-summary
+    hidden
+    class="rounded-[10px] border border-error bg-error-bg px-4 py-3 font-semibold text-[#8C1D18]"
+  >
+    Please correct the highlighted fields and try again.
+  </div>
+
+  <div class="grid gap-4.5" style="grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr))">
+    {
+      fields.map((f) => (
+        <div
+          class={f.full || mode === 'quick' ? 'col-span-full' : ''}
+          data-field={f.id}
+          data-show-for={f.showFor}
+        >
+          <label for={`${mode}-${f.id}`} class="mb-1.5 block text-[15px] font-semibold text-navy">
+            {f.label}
+            {f.required && <span class="text-error"> *</span>}
+            {f.optional && <span class="font-normal text-muted"> (optional)</span>}
+          </label>
+
+          {f.kind === 'input' && (
+            <input
+              id={`${mode}-${f.id}`}
+              name={f.id}
+              type={f.type ?? 'text'}
+              required={f.required}
+              autocomplete={f.autocomplete}
+              class={inputCls}
+            />
+          )}
+
+          {f.kind === 'select' && (
+            <select id={`${mode}-${f.id}`} name={f.id} required={f.required} class={inputCls}>
+              {f.options?.map((o) => (
+                <option value={o.value} selected={f.id === 'service' && o.value === preset}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {f.kind === 'area' && (
+            <textarea
+              id={`${mode}-${f.id}`}
+              name={f.id}
+              rows="5"
+              required={f.required}
+              class={`${inputCls} resize-y`}
+            />
+          )}
+
+          <p data-error-for={f.id} hidden class="mt-1.5 text-[14px] font-semibold text-error"></p>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="flex flex-col items-start gap-3">
+    <button
+      type="submit"
+      class="min-h-[52px] cursor-pointer rounded-[--radius-btn] border-0 bg-teal px-8 text-[16px] font-semibold text-white hover:bg-teal-dark"
+    >
+      {submitLabel}
+    </button>
+    <p class="text-[14px] text-muted">
+      We reply to inquiries at <a href="/contact" class="font-semibold text-teal-dark underline">office@seaservint.com</a>.
+    </p>
+  </div>
+</form>
+
+<script>
+  // Progressive enhancement over a form that already works:
+  //  - required/type=email give native validation with JS off
+  //  - every conditional field is in the HTML, merely revealed by JS
+  document.querySelectorAll<HTMLFormElement>('[data-form]').forEach((form) => {
+    const summary = form.querySelector<HTMLElement>('[data-error-summary]');
+    const serviceSel = form.querySelector<HTMLSelectElement>('select[name="service"]');
+    const conditionals = form.querySelectorAll<HTMLElement>('[data-show-for]');
+
+    // --- Conditional fields ---
+    const syncConditionals = () => {
+      const val = serviceSel?.value ?? '';
+      conditionals.forEach((el) => {
+        const show = el.dataset.showFor === val;
+        el.hidden = !show;
+        el.querySelectorAll<HTMLInputElement>('input, select, textarea').forEach((i) => {
+          i.disabled = !show; // disabled fields are omitted from the payload
+        });
+      });
+    };
+    if (serviceSel && conditionals.length) {
+      syncConditionals();
+      serviceSel.addEventListener('change', syncConditionals);
+    }
+
+    // --- Validation: take over from the browser for better messaging ---
+    form.setAttribute('novalidate', '');
+
+    const setError = (field: HTMLElement, msg: string) => {
+      const input = field.querySelector<HTMLElement>('input, select, textarea');
+      const slot = field.querySelector<HTMLElement>('[data-error-for]');
+      if (!input || !slot) return;
+      if (msg) {
+        input.setAttribute('aria-invalid', 'true');
+        input.setAttribute('aria-describedby', slot.id || (slot.id = `err-${Math.random().toString(36).slice(2)}`));
+        slot.textContent = msg;
+        slot.hidden = false;
+      } else {
+        input.removeAttribute('aria-invalid');
+        slot.textContent = '';
+        slot.hidden = true;
+      }
+    };
+
+    form.addEventListener('submit', (e) => {
+      let firstBad: HTMLElement | null = null;
+
+      form.querySelectorAll<HTMLElement>('[data-field]').forEach((field) => {
+        if (field.hidden) return;
+        const input = field.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+          'input, select, textarea'
+        );
+        if (!input || input.disabled) return;
+
+        const value = input.value.trim();
+        let msg = '';
+
+        if (input.required && !value) {
+          msg = 'Please complete this field.';
+        } else if (input.getAttribute('type') === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          msg = 'Enter a valid email address, for example name@company.com.';
+        }
+
+        setError(field, msg);
+        if (msg && !firstBad) firstBad = input;
+      });
+
+      if (firstBad) {
+        e.preventDefault();
+        if (summary) summary.hidden = false;
+        (firstBad as HTMLElement).focus();
+      } else if (summary) {
+        summary.hidden = true;
+      }
+    });
+
+    // Clear a field's error as soon as the visitor corrects it
+    form.querySelectorAll<HTMLElement>('[data-field]').forEach((field) => {
+      field.querySelectorAll('input, select, textarea').forEach((input) => {
+        input.addEventListener('input', () => setError(field, ''));
+        input.addEventListener('change', () => setError(field, ''));
+      });
+    });
+  });
+</script>

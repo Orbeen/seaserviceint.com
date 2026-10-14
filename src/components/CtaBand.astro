@@ -1,0 +1,29 @@
+---
+import Button from './Button.astro';
+
+interface Props {
+  title?: string;
+  lede?: string;
+  /** Show the secondary outline button alongside the primary. */
+  secondary?: boolean;
+}
+
+const {
+  title = 'What does your vessel need?',
+  lede = 'Tell us about your vessel, port call, or service requirement and our team will review your inquiry.',
+  secondary = true,
+} = Astro.props;
+---
+
+<section class="bg-navy px-6 py-[72px]">
+  <div class="container-site flex flex-wrap items-center justify-between gap-7">
+    <div class="flex max-w-[680px] flex-col gap-2.5">
+      <h2 class="text-white">{title}</h2>
+      <p class="text-[18px] text-on-navy">{lede}</p>
+    </div>
+    <div class="flex flex-wrap gap-3.5">
+      <Button href="/request">Request a Service</Button>
+      {secondary && <Button href="/contact" variant="outline">Contact SeaServe</Button>}
+    </div>
+  </div>
+</section>

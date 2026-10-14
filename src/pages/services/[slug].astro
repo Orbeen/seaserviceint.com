@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Plate from '../../components/Plate.astro';
+import Eyebrow from '../../components/Eyebrow.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Form from '../../components/form/Form.astro';
+import { SERVICES, SERVICE_BY_SLUG, type Service } from '../../data/services';
+
+export function getStaticPaths() {
+  return SERVICES.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+
+// Validated at build time in services.ts, so these always resolve.
+const related = service.related.map((slug) => SERVICE_BY_SLUG.get(slug)!);
+---
+
+<BaseLayout
+  title={service.title}
+  description={service.shortDescription}
+  current="services"
+>
+  <PageHero
+    title={service.title}
+    lede={service.intro}
+    variant={service.heroVariant}
+    minHeight="440px"
+    trail={[{ label: 'Services', href: '/services' }, { label: service.title }]}
+  />
+
+  <section class="px-6 py-20">
+    <div class="container-site flex flex-wrap items-start gap-14">
+      <div class="flex min-w-0 flex-[999_1_520px] flex-col gap-7">
+        <Eyebrow>Overview</Eyebrow>
+        <h2 class="text-navy" style="font-size:clamp(28px,3.2vw,38px)">{service.heading}</h2>
+        <p class="text-[18px]">{service.body}</p>
+
+        {
+          service.subItems.length > 0 && (
+            <div class="flex flex-col gap-4.5">
+              <h3 class="text-navy">{service.subItemsTitle}</h3>
+              <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr))">
+                {service.subItems.map((it) => (
+                  <div class="flex flex-col gap-1.5 rounded-xl border-t-[3px] border-aqua bg-pale p-5">
+                    <h4 class="text-navy">{it.title}</h4>
+                    <p class="text-[15px]">{it.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        }
+
+        {
+          service.needsConfirmation && (
+            <div class="rounded-xl border-[1.5px] border-dashed border-teal bg-white px-5 py-4.5">
+              <strong class="text-navy">Details to be confirmed.</strong> This page reflects only what SeaServe's
+              current website states about this service. A full scope description will be added before launch.
+            </div>
+          )
+        }
+      </div>
+
+      <!-- Sticky sidebar: pure CSS, no scroll listener. Unsticks on mobile so
+           the form cannot cover the content. -->
+      <aside
+        class="flex min-w-0 flex-[1_1_360px] flex-col gap-4.5 rounded-[--radius-panel] border border-line bg-white p-7 shadow-[0_16px_40px_rgba(8,43,69,0.08)] nav:sticky"
+        style="top: calc(var(--header-h) + 16px)"
+      >
+        <h2 class="text-[24px] leading-snug text-navy">Inquire about this service</h2>
+        <p class="text-[15px]">
+          Send a short note, or use the
+          <a href="/request" class="font-semibold text-teal-dark underline">full service request form</a>.
+        </p>
+        <Form mode="quick" preset={service.slug} />
+      </aside>
+    </div>
+  </section>
+
+  <section class="bg-pale px-6 py-20">
+    <div class="container-site flex flex-col gap-9">
+      <h2 class="text-navy" style="font-size:clamp(28px,3.2vw,38px)">Related services</h2>
+      <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr))">
+        {
+          related.map((r) => (
+            <a
+              href={`/services/${r.slug}`}
+              class="card-lift flex flex-col overflow-hidden rounded-[--radius-card] border border-line bg-white"
+            >
+              <div class="relative h-[170px]">
+                <Plate variant={r.heroVariant} />
+              </div>
+              <div class="flex flex-col gap-2 p-5.5">
+                <h3 class="text-[20px] text-navy">{r.title}</h3>
+                <span class="font-semibold text-teal-dark">Explore Service &rarr;</span>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand secondary={false} />
+</BaseLayout>

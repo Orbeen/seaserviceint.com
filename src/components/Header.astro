@@ -1,0 +1,228 @@
+---
+import Logo from './Logo.astro';
+import { SERVICES } from '../data/services';
+
+interface Props {
+  /** Marks the active nav item with aria-current. */
+  current?: 'home' | 'about' | 'services' | 'gallery' | 'contact' | 'request';
+}
+
+const { current } = Astro.props;
+
+const links = [
+  { key: 'home', label: 'Home', href: '/' },
+  { key: 'about', label: 'About Us', href: '/about' },
+] as const;
+
+const tail = [
+  { key: 'gallery', label: 'Gallery', href: '/gallery' },
+  { key: 'contact', label: 'Contact', href: '/contact' },
+] as const;
+
+const navLink = (active: boolean) =>
+  `inline-flex items-center min-h-[44px] px-3.5 text-[15px] font-semibold ${
+    active ? 'text-aqua shadow-[inset_0_-3px_0_#36C6BB]' : 'text-white hover:text-aqua'
+  }`;
+---
+
+<header class="sticky top-0 z-30 bg-navy text-white">
+  <div class="container-site flex h-[76px] items-center justify-between gap-6">
+    <Logo />
+
+    <!-- Desktop nav -->
+    <nav class="hidden items-center gap-1 nav:flex" aria-label="Primary">
+      {
+        links.map((l) => (
+          <a
+            href={l.href}
+            class={navLink(current === l.key)}
+            aria-current={current === l.key ? 'page' : undefined}
+          >
+            {l.label}
+          </a>
+        ))
+      }
+
+      <!-- Services dropdown: opens on click so it works by keyboard and touch -->
+      <div class="relative" data-dropdown>
+        <button
+          type="button"
+          class={`${navLink(current === 'services')} gap-1.5 bg-transparent border-0 cursor-pointer`}
+          aria-expanded="false"
+          aria-controls="services-menu"
+          data-dropdown-trigger
+        >
+          Services
+          <svg
+            aria-hidden="true"
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            data-dropdown-chevron
+            class="transition-transform"
+          >
+            <path d="M2 4l4 4 4-4"></path>
+          </svg>
+        </button>
+        <div
+          id="services-menu"
+          hidden
+          class="absolute left-0 top-full w-[330px] flex-col rounded-b-[14px] bg-white p-2.5 text-navy shadow-[0_24px_48px_rgba(8,43,69,0.28)]"
+          data-dropdown-panel
+        >
+          <a href="/services" class="rounded-lg px-3.5 py-2.5 font-bold text-teal hover:bg-pale">
+            All services
+          </a>
+          {
+            SERVICES.map((s) => (
+              <a href={`/services/${s.slug}`} class="rounded-lg px-3.5 py-2.5 font-semibold hover:bg-pale">
+                {s.title}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      {
+        tail.map((l) => (
+          <a
+            href={l.href}
+            class={navLink(current === l.key)}
+            aria-current={current === l.key ? 'page' : undefined}
+          >
+            {l.label}
+          </a>
+        ))
+      }
+
+      <a
+        href="/request"
+        class="ml-3.5 inline-flex min-h-[46px] items-center rounded-[--radius-btn] bg-teal px-5.5 font-semibold text-white hover:bg-teal-dark"
+      >
+        Request a Service
+      </a>
+    </nav>
+
+    <!-- Mobile trigger -->
+    <button
+      type="button"
+      class="flex h-12 w-12 items-center justify-center rounded-lg border-[1.5px] border-white/45 bg-transparent text-white cursor-pointer nav:hidden"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-burger
+    >
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M3 6h16M3 11h16M3 16h16" data-burger-open></path>
+        <path d="M5 5l12 12M17 5L5 17" data-burger-close style="display:none"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile panel: in the DOM so links remain reachable without JS -->
+  <nav
+    id="mobile-menu"
+    hidden
+    class="border-t border-white/15 bg-navy px-6 pb-6 pt-3 nav:hidden"
+    aria-label="Mobile"
+    data-mobile-panel
+  >
+    <div class="flex flex-col">
+      <a href="/" class="border-b border-white/10 py-3.5 font-semibold">Home</a>
+      <a href="/about" class="border-b border-white/10 py-3.5 font-semibold">About Us</a>
+      <a href="/services" class="py-3.5 font-semibold">Services</a>
+      <div class="flex flex-col border-b border-white/10 pb-2 pl-4">
+        {
+          SERVICES.map((s) => (
+            <a href={`/services/${s.slug}`} class="py-2.5 text-on-navy hover:text-aqua">
+              {s.title}
+            </a>
+          ))
+        }
+      </div>
+      <a href="/gallery" class="border-b border-white/10 py-3.5 font-semibold">Gallery</a>
+      <a href="/contact" class="py-3.5 font-semibold">Contact</a>
+      <a
+        href="/request"
+        class="mt-2 flex min-h-[52px] items-center justify-center rounded-[--radius-btn] bg-teal font-semibold text-white hover:bg-teal-dark"
+      >
+        Request a Service
+      </a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Progressive enhancement. Without JS the mobile panel's links are still in
+  // the DOM and the desktop nav is unaffected; only the toggles are inert.
+
+  // --- Services dropdown ---
+  const dd = document.querySelector<HTMLElement>('[data-dropdown]');
+  if (dd) {
+    const trigger = dd.querySelector<HTMLButtonElement>('[data-dropdown-trigger]')!;
+    const panel = dd.querySelector<HTMLElement>('[data-dropdown-panel]')!;
+    const chevron = dd.querySelector<SVGElement>('[data-dropdown-chevron]')!;
+
+    const setOpen = (open: boolean) => {
+      panel.hidden = !open;
+      panel.style.display = open ? 'flex' : '';
+      trigger.setAttribute('aria-expanded', String(open));
+      chevron.style.transform = open ? 'rotate(180deg)' : '';
+    };
+
+    trigger.addEventListener('click', () => {
+      setOpen(trigger.getAttribute('aria-expanded') !== 'true');
+    });
+
+    // Close on Escape, returning focus to the trigger
+    dd.addEventListener('keydown', (e) => {
+      if ((e as KeyboardEvent).key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        trigger.focus();
+      }
+    });
+
+    // Close when focus or the pointer leaves the dropdown entirely
+    document.addEventListener('click', (e) => {
+      if (!dd.contains(e.target as Node)) setOpen(false);
+    });
+    dd.addEventListener('focusout', () => {
+      requestAnimationFrame(() => {
+        if (!dd.contains(document.activeElement)) setOpen(false);
+      });
+    });
+  }
+
+  // --- Mobile menu ---
+  const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+  const mobilePanel = document.querySelector<HTMLElement>('[data-mobile-panel]');
+  if (burger && mobilePanel) {
+    const iconOpen = burger.querySelector<SVGElement>('[data-burger-open]')!;
+    const iconClose = burger.querySelector<SVGElement>('[data-burger-close]')!;
+
+    const setOpen = (open: boolean) => {
+      mobilePanel.hidden = !open;
+      burger.setAttribute('aria-expanded', String(open));
+      burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      // SVG has no `hidden` attribute — toggle display instead
+      iconOpen.style.display = open ? 'none' : '';
+      iconClose.style.display = open ? '' : 'none';
+    };
+
+    burger.addEventListener('click', () => {
+      setOpen(burger.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        burger.focus();
+      }
+    });
+  }
+</script>

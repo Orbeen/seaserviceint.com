@@ -1,0 +1,66 @@
+---
+import Logo from './Logo.astro';
+import { SERVICES } from '../data/services';
+import { COMPANY } from '../data/company';
+
+const year = new Date().getFullYear();
+
+const quickLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'About Us', href: '/about' },
+  { label: 'Services', href: '/services' },
+  { label: 'Gallery', href: '/gallery' },
+  { label: 'Contact', href: '/contact' },
+  { label: 'Request a Service', href: '/request' },
+];
+---
+
+<footer class="bg-navy text-on-navy">
+  <div
+    class="container-site grid gap-10 py-[72px] pb-10"
+    style="grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr))"
+  >
+    <div class="flex flex-col gap-4">
+      <Logo />
+      <p>{COMPANY.description}</p>
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <h2 class="mb-2 text-[15px] font-bold uppercase tracking-[0.08em] text-white">Quick links</h2>
+      {
+        quickLinks.map((l) => (
+          <a href={l.href} class="py-1 hover:text-aqua">
+            {l.label}
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <h2 class="mb-2 text-[15px] font-bold uppercase tracking-[0.08em] text-white">Services</h2>
+      {
+        SERVICES.map((s) => (
+          <a href={`/services/${s.slug}`} class="py-1 hover:text-aqua">
+            {s.title}
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="flex flex-col gap-2.5">
+      <h2 class="mb-1 text-[15px] font-bold uppercase tracking-[0.08em] text-white">Contact</h2>
+      <a href={`mailto:${COMPANY.email}`} class="hover:text-aqua">{COMPANY.email}</a>
+      <a href={`mailto:${COMPANY.emailAlt}`} class="hover:text-aqua">{COMPANY.emailAlt}</a>
+      <a href={`tel:${COMPANY.telHref}`} class="hover:text-aqua">{COMPANY.tel}</a>
+      <address>{COMPANY.address.full}</address>
+      <a href="/contact" class="font-semibold text-aqua hover:underline">Contact page &rarr;</a>
+    </div>
+  </div>
+
+  <div class="border-t border-white/15">
+    <div class="container-site flex flex-wrap justify-between gap-3 py-5.5 text-[14px]">
+      <span>&copy; {year} {COMPANY.name} All rights reserved.</span>
+      <span>Imagery is illustrative pending project photography.</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,103 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { COMPANY, TRUST } from '../data/company';
+
+interface Props {
+  title: string;
+  description: string;
+  current?: 'home' | 'about' | 'services' | 'gallery' | 'contact' | 'request';
+  noindex?: boolean;
+  /** Emit LocalBusiness JSON-LD (home and contact only). */
+  localBusiness?: boolean;
+}
+
+const { title, description, current, noindex = false, localBusiness = false } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const fullTitle = title.includes(COMPANY.name) ? title : `${title} | ${COMPANY.name}`;
+
+const org = {
+  '@type': 'Organization',
+  '@id': `${Astro.site}#organization`,
+  name: COMPANY.legalName,
+  alternateName: COMPANY.name,
+  url: Astro.site?.href,
+  email: COMPANY.email,
+  telephone: COMPANY.tel,
+  faxNumber: COMPANY.fax,
+  foundingDate: String(TRUST.foundedYear),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: `${COMPANY.address.line1}, ${COMPANY.address.line2}`,
+    addressLocality: COMPANY.address.locality,
+    postalCode: COMPANY.address.postalCode,
+    addressRegion: COMPANY.address.region,
+    addressCountry: COMPANY.address.countryCode,
+  },
+  areaServed: COMPANY.ports.map((p) => ({ '@type': 'City', name: p })),
+};
+
+// Note: `geo` is deliberately omitted — coordinates are unconfirmed, and
+// guessing a maritime office's location would be worse than omitting it.
+//
+// The spread comes FIRST so the LocalBusiness-specific keys below override
+// the Organization ones; the other order silently emits @type Organization.
+const { '@type': _orgType, '@id': _orgId, ...orgShared } = org;
+const business = {
+  ...orgShared,
+  '@type': 'LocalBusiness',
+  '@id': `${canonical}#business`,
+  name: COMPANY.legalName,
+  image: new URL('/og/og-default.jpg', Astro.site).href,
+  priceRange: '$$',
+  openingHoursSpecification: {
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    opens: '00:00',
+    closes: '23:59',
+  },
+};
+
+const graph: Record<string, unknown>[] = [org];
+if (localBusiness) graph.push(business);
+
+const jsonld = { '@context': 'https://schema.org', '@graph': graph };
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={COMPANY.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en" />
+    <meta property="og:image" content={new URL('/og/og-default.jpg', Astro.site).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />
+  </head>
+
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+    <Header current={current} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

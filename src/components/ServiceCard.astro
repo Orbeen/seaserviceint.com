@@ -1,0 +1,49 @@
+---
+import Plate from './Plate.astro';
+import type { Service } from '../data/services';
+
+interface Props {
+  service: Service;
+  /** 'grid' = vertical card (home); 'row' = horizontal (services index). */
+  layout?: 'grid' | 'row';
+}
+
+const { service, layout = 'grid' } = Astro.props;
+const href = `/services/${service.slug}`;
+
+// teal-dark, not teal: on the pale card background teal is 4.33:1 and fails AA.
+const cta = 'font-semibold text-teal-dark';
+---
+
+{
+  layout === 'grid' ? (
+    <a href={href} class="card-lift flex flex-col overflow-hidden rounded-[--radius-card] border border-line bg-white">
+      <div class="relative h-[210px]">
+        <Plate variant={service.heroVariant} />
+      </div>
+      <div class="flex flex-1 flex-col gap-2.5 p-6">
+        <h3 class="text-navy">{service.title}</h3>
+        <p>{service.shortDescription}</p>
+        <span class={`mt-auto pt-2 ${cta}`}>Explore Service &rarr;</span>
+      </div>
+    </a>
+  ) : (
+    <a href={href} class="card-lift flex flex-wrap overflow-hidden rounded-[--radius-card] border border-line bg-white">
+      <div class="relative min-h-[180px] flex-[1_1_260px]">
+        <Plate variant={service.heroVariant} />
+      </div>
+      <div class="flex flex-[3_1_420px] flex-col gap-2.5 px-7 py-6">
+        <h2 class="text-[22px] leading-snug text-navy">{service.title}</h2>
+        <p>{service.shortDescription}</p>
+        {service.tags.length > 0 && (
+          <ul class="m-0 flex list-none flex-wrap gap-2 p-0">
+            {service.tags.map((t) => (
+              <li class="rounded-full bg-pale px-3 py-1 text-[14px] font-semibold text-navy">{t}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <div class={`flex flex-[1_1_160px] items-center px-7 py-6 ${cta}`}>Explore Service &rarr;</div>
+    </a>
+  )
+}

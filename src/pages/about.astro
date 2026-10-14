@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Plate from '../components/Plate.astro';
+import Button from '../components/Button.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { COMPANY, DRAFTED, TRUST } from '../data/company';
+
+const approach = [
+  {
+    title: 'Practical Service Coordination',
+    body: 'Agency, supply, crew and repair support coordinated together by one team.',
+  },
+  { title: 'Attention to Vessel Requirements', body: 'Supplies and support are adjusted to the needs of each vessel.' },
+  { title: 'Clear Communication', body: 'Straightforward updates from the first inquiry to the completed service.' },
+  {
+    title: 'Flexible Maritime Support',
+    body: 'Scope a single requirement or combine several services for one port call.',
+  },
+];
+---
+
+<BaseLayout
+  title="About Us"
+  description="SeaServe Int. is a Chittagong-based maritime services company supporting shipowners, charterers, managers and vessel operators at Bangladeshi ports."
+  current="about"
+>
+  <PageHero
+    title="Maritime support from Chittagong"
+    lede="SeaServe Int. supports shipowners, charterers, managers and vessel operators with practical services at Bangladeshi ports."
+    variant="port"
+    trail={[{ label: 'About Us' }]}
+  />
+
+  <section class="px-6 py-24">
+    <div
+      class="container-site grid items-center gap-16"
+      style="grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr))"
+    >
+      <div class="flex flex-col gap-5">
+        <Eyebrow>Company overview</Eyebrow>
+        <h2 class="text-navy" style="font-size:clamp(28px,3.4vw,42px)">
+          Maritime Support Built Around Your Operations
+        </h2>
+        <p class="text-[18px]">
+          {COMPANY.name} is a maritime services company based in Chittagong, Bangladesh. Its services cover shipping
+          agency, crew sign on and off, general ship supply, general repair, cleaning solutions, ship spares,
+          husbandry, marine survey, and export and import.
+        </p>
+        <p>
+          Crew change support is available at the major Bangladeshi seaports of {COMPANY.ports.join(', ')}.
+        </p>
+        <div><Button href="/services">View Our Services</Button></div>
+      </div>
+
+      <div class="grid gap-4" style="grid-template-columns: 1.3fr 1fr; grid-template-rows: 250px 250px">
+        <div class="relative row-span-2 overflow-hidden rounded-[--radius-panel]"><Plate variant="ship" /></div>
+        <div class="relative overflow-hidden rounded-[--radius-panel]"><Plate variant="crew" /></div>
+        <div class="relative overflow-hidden rounded-[--radius-panel]"><Plate variant="supply" /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-pale px-6 py-24">
+    <div class="container-site flex flex-col gap-11">
+      <SectionHeading eyebrow="Our approach" title="How we work with vessel operators" />
+      <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr))">
+        {
+          approach.map((a) => (
+            <div class="flex flex-col gap-2.5 rounded-[--radius-card] border-t-[3px] border-aqua bg-white p-7">
+              <h3 class="text-[20px] text-navy">{a.title}</h3>
+              <p>{a.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!--
+    DRAFT-COPY below: mission, values and history were drafted for this build,
+    not supplied by the client. Source: src/data/company.ts (DRAFTED).
+  -->
+  <section class="px-6 py-24">
+    <div class="container-site flex flex-col gap-11">
+      <SectionHeading eyebrow="Mission and values" title={DRAFTED.mission} />
+
+      <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr))">
+        {
+          DRAFTED.values.map((v) => (
+            <div class="flex flex-col gap-2.5 rounded-[--radius-card] border border-line bg-white p-7">
+              <h3 class="text-[20px] text-navy">{v.title}</h3>
+              <p>{v.body}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="flex flex-col gap-3 rounded-[--radius-card] bg-pale p-8">
+        <h3 class="text-navy">Company history</h3>
+        <p class="text-[17px]">{DRAFTED.history}</p>
+        <p class="mt-2 text-[14px] text-muted">
+          Founding year {TRUST.foundedYear} is stated on SeaServe's current website. Leadership profiles and any
+          certifications will be added once supplied.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand lede="Tell us about your vessel, port call, or service requirement." />
+</BaseLayout>

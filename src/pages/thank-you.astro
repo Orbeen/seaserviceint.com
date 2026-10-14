@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import { COMPANY } from '../data/company';
+---
+
+<BaseLayout
+  title="Thank you"
+  description="Your inquiry has been received by SeaServe Int."
+  noindex
+>
+  <section class="px-6 py-24">
+    <div class="container-site flex max-w-[720px] flex-col items-start gap-6">
+      <svg
+        aria-hidden="true"
+        width="56"
+        height="56"
+        viewBox="0 0 44 44"
+        fill="none"
+        stroke="#087E8B"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="22" cy="22" r="19"></circle>
+        <path d="M13 23l6 6 12-13"></path>
+      </svg>
+
+      <h1 class="text-navy">Thank you — your inquiry has been received.</h1>
+
+      <p class="text-[18px]">
+        Our team will review your requirement and reply to the email address you provided. If your request is
+        urgent, you can reach us directly on
+        <a href={`tel:${COMPANY.telHref}`} class="font-semibold text-teal-dark underline">{COMPANY.tel}</a>
+        or at
+        <a href={`mailto:${COMPANY.email}`} class="font-semibold text-teal-dark underline">{COMPANY.email}</a>.
+      </p>
+
+      <div class="flex flex-wrap gap-3.5 pt-2">
+        <Button href="/services">Browse Our Services</Button>
+        <a
+          href="/"
+          class="inline-flex min-h-[52px] items-center justify-center rounded-[--radius-btn] border-[1.5px] border-teal px-7 font-semibold text-teal-dark hover:bg-pale"
+        >
+          Back to Home
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
