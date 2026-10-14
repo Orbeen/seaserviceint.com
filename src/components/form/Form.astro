@@ -70,8 +70,8 @@ if (mode === 'quick') {
     { id: 'port', label: 'Port or location', kind: 'input', required: true },
     { id: 'date', label: 'Estimated service date', kind: 'input', type: 'date', optional: true },
     // Conditional fields are rendered in HTML for every service and REVEALED
-    // by JS. Injecting them would hide them from Netlify's form parser and
-    // make them unreachable without JS.
+    // by JS, rather than injected, so the form still works without JS —
+    // every field is simply visible and optional.
     {
       id: 'crewAction',
       label: 'Crew change type',
@@ -116,22 +116,28 @@ const inputCls =
 <form
   name={formName}
   method="POST"
-  action="/thank-you"
-  data-netlify="true"
-  netlify-honeypot="bot-field"
+  action="/submit.php"
   data-form
   class="flex flex-col gap-5"
 >
-  {/* Netlify injects form-name itself when it processes data-netlify="true" —
-      adding it by hand risks a duplicate field. */}
+  {/* Posts to public/submit.php on the cPanel host, which emails the office
+      and redirects to /thank-you. Identifies which form was submitted. */}
+  <input type="hidden" name="form-name" value={formName} />
+
+  {/* Lets the handler reject instant submissions, which are always bots.
+      Set from JS so a cached page cannot ship a stale timestamp. */}
+  <input type="hidden" name="form_started" value="" data-form-started />
+
+  {/* Tells the office which page the inquiry came from. */}
+  <input type="hidden" name="page_url" value="" data-page-url />
 
   {/* Quick mode has no service select, so the page's service travels as a
       hidden field — otherwise a sidebar inquiry arrives without saying which
       service it is about. */}
   {mode === 'quick' && preset && <input type="hidden" name="service" value={preset} />}
 
-  {/* Honeypot. Netlify documents the attribute but ships no CSS to hide it,
-      so we hide it ourselves and keep it out of the tab order. */}
+  {/* Honeypot: hidden from people, tempting to bots. submit.php silently
+      accepts and discards anything that fills it. Kept out of the tab order. */}
   <div class="absolute h-0 w-0 overflow-hidden" aria-hidden="true">
     <label for={`bot-field-${mode}`}>Do not fill this in</label>
     <input id={`bot-field-${mode}`} name="bot-field" type="text" tabindex="-1" autocomplete="off" />
@@ -216,6 +222,13 @@ const inputCls =
   //  - every conditional field is in the HTML, merely revealed by JS
   document.querySelectorAll<HTMLFormElement>('[data-form]').forEach((form) => {
     const summary = form.querySelector<HTMLElement>('[data-error-summary]');
+
+    // Stamp these at load, not build, so a CDN-cached page is still correct.
+    const startedAt = form.querySelector<HTMLInputElement>('[data-form-started]');
+    if (startedAt) startedAt.value = String(Math.floor(Date.now() / 1000));
+
+    const pageUrl = form.querySelector<HTMLInputElement>('[data-page-url]');
+    if (pageUrl) pageUrl.value = window.location.pathname;
     const serviceSel = form.querySelector<HTMLSelectElement>('select[name="service"]');
     const conditionals = form.querySelectorAll<HTMLElement>('[data-show-for]');
 
