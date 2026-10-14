@@ -114,3 +114,15 @@ Note the site domain (`seaserviceint.com`) differs from the company's email
 domain (`seaservint.com`). Both are intentional; `site` in
 `astro.config.mjs` must match whatever host actually serves the site, or
 canonical URLs and the sitemap will point at the wrong place.
+
+## Contributing
+
+Clone over SSH:
+
+```bash
+git clone git@github.com:Orbeen/seaserviceint.com.git
+```
+
+Pushes to `main` trigger a Netlify deploy. Run `npm run build` before
+pushing — it type-checks, and the build fails on a bad `related` slug in
+`src/data/services.ts` rather than shipping a dead link.
