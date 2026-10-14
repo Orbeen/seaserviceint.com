@@ -14,16 +14,22 @@ import type { PlateVariant } from './services';
  * and each one's "Illustrative placeholder" chip disappears automatically.
  */
 export const PLATE_IMAGES: Partial<Record<PlateVariant, string>> = {
-  // ship:   '/img/ship-at-sea.jpg',
-  // port:   '/img/vessel-alongside.jpg',
-  // crew:   '/img/crew-gangway.jpg',
-  // supply: '/img/stores-on-quay.jpg',
-  // repair: '/img/hull-repair.jpg',
-  // clean:  '/img/hull-cleaning.jpg',
-  // spares: '/img/machinery-spares.jpg',
-  // survey: '/img/hull-survey.jpg',
-  // docs:   '/img/containers.jpg',
-  // anchor: '/img/vessel-at-anchor.jpg',
+  // Stock photography (Unsplash License — free commercial use, no attribution
+  // required). Each was checked by eye before use: guessing photo IDs has a
+  // ~20% hit rate, and the rejects included a leisure yacht, a surfer, a
+  // road truck carrying another firm's branding, and an office desk.
+  //
+  // These show OTHER companies' vessels and facilities. Replace with real
+  // SeaServe photography when available — that is still the right end state.
+  ship: '/img/ship.jpg', //   aerial container vessel underway, pilot boat alongside
+  port: '/img/port.jpg', //   container vessels alongside, gantry cranes
+  docs: '/img/docs.jpg', //   aerial container terminal
+  supply: '/img/supply.jpg', // warehouse, palletised stores
+  repair: '/img/repair.jpg', // welder at work
+
+  // Still illustrations — no suitable free photo found for these subjects:
+  // crew (gangway/crew change), clean (hull cleaning), spares (machinery
+  // spares), survey (hull inspection), anchor (vessel at anchorage).
 };
 
 /**
@@ -39,16 +45,21 @@ export const PLATE_IMAGES: Partial<Record<PlateVariant, string>> = {
  */
 export const SHOW_PLACEHOLDER_CHIP = false;
 
-/** Descriptive alt text, used by both the SVG and photo branches. */
+/**
+ * Alt text. Photo variants describe the photograph; the rest say
+ * "Illustration of…" so nothing is passed off as a photo of real work.
+ * Keep these in step with PLATE_IMAGES above.
+ */
 export const PLATE_LABELS: Record<PlateVariant, string> = {
-  ship: 'Illustration of a container vessel at sea',
-  port: 'Illustration of a vessel alongside port cranes',
+  ship: 'A container vessel underway at sea, seen from above, with a pilot boat alongside',
+  port: 'Container vessels alongside a terminal quay beneath ship-to-shore gantry cranes',
+  docs: 'A container terminal from above, with stacked containers and yard cranes',
+  supply: 'Palletised stores on racking in a supply warehouse',
+  repair: 'A welder working on steel, sparks flying from the arc',
+
   crew: 'Illustration of a gangway and crew at a vessel',
-  supply: 'Illustration of stores on a quay beside a vessel',
-  repair: 'Illustration of welding on a steel hull plate',
   clean: 'Illustration of cleaning along a vessel hull',
   spares: 'Illustration of machinery spares beside a vessel',
   survey: 'Illustration of a marine survey inspection of a hull',
-  docs: 'Illustration of stacked containers beside a vessel',
   anchor: 'Illustration of a vessel at anchor',
 };

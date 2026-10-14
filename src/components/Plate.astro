@@ -10,10 +10,19 @@ interface Props {
   chip?: boolean;
   /** Decorative use — hides from assistive tech instead of labelling. */
   decorative?: boolean;
+  /** Above the fold: load eagerly so it does not delay the largest paint. */
+  priority?: boolean;
   class?: string;
 }
 
-const { variant, dim = 0, chip = true, decorative = false, class: cls = '' } = Astro.props;
+const {
+  variant,
+  dim = 0,
+  chip = true,
+  decorative = false,
+  priority = false,
+  class: cls = '',
+} = Astro.props;
 
 const photo = PLATE_IMAGES[variant];
 const label = PLATE_LABELS[variant];
@@ -29,13 +38,18 @@ const a11y = decorative
 <div class={`absolute inset-0 overflow-hidden bg-navy ${cls}`}>
   {
     photo ? (
-      <img
-        src={photo}
-        alt={decorative ? '' : label}
-        class="absolute inset-0 h-full w-full object-cover"
-        loading="lazy"
-        decoding="async"
-      />
+      <>
+        <img
+          src={photo}
+          alt={decorative ? '' : label}
+          class="absolute inset-0 h-full w-full object-cover"
+          loading={priority ? 'eager' : 'lazy'}
+          fetchpriority={priority ? 'high' : 'auto'}
+          decoding={priority ? 'sync' : 'async'}
+        />
+        {/* Navy scrim so white hero text stays legible over any photo */}
+        {dim > 0 && <div class="absolute inset-0 bg-navy" style={`opacity:${dim}`} />}
+      </>
     ) : (
       <svg
         viewBox="0 0 800 500"

@@ -29,6 +29,25 @@ export interface ServiceSubItem {
   description: string;
 }
 
+/**
+ * A question a vessel operator actually asks before engaging a service.
+ *
+ * Answers draw on standard maritime practice (IMPA/ISSA store categories,
+ * port-call document flow, crew-change sequencing) rather than claims about
+ * SeaServe specifically. Anything SeaServe-specific that could not be
+ * verified was left out rather than invented — see DRAFTED in company.ts.
+ */
+export interface ServiceFaq {
+  question: string;
+  answer: string;
+}
+
+/** A stage in how the service typically runs. */
+export interface ProcessStep {
+  title: string;
+  description: string;
+}
+
 export interface Service {
   slug: string;
   title: string;
@@ -50,6 +69,10 @@ export interface Service {
   /** Exactly 3 sibling slugs. Asserted at build time. */
   related: string[];
   conditional?: ConditionalKind;
+  /** Extra prose shown under the overview. Industry practice, not claims. */
+  detail?: string[];
+  process?: ProcessStep[];
+  faqs?: ServiceFaq[];
 }
 
 export const SERVICES: readonly Service[] = [
@@ -77,6 +100,55 @@ export const SERVICES: readonly Service[] = [
     ],
     needsConfirmation: false,
     related: ['crew-sign-on-off', 'ship-husbandry', 'marine-survey'],
+    detail: [
+      'A port call runs on paperwork and timing. Before a vessel arrives, the agent files the pre-arrival notice with port control, lodges crew and cargo documentation with customs and immigration, and books the berth, pilot and tugs against the vessel’s ETA. Get the sequence wrong and the vessel waits at anchorage while costs accrue.',
+      'During the call, the agent is the master’s point of contact ashore: arranging launch boats, clearing stores and spares through customs, handling cash to master, coordinating surveyors and class attendance, and keeping owners and charterers updated as operations progress.',
+      'On departure, outward clearance, port disbursements and the final statement of facts close the call. A disbursement account sets out what was spent and why, which is what owners audit afterwards.',
+    ],
+    process: [
+      {
+        title: 'Pre-arrival',
+        description:
+          'ETA received, berth and pilot booked, pre-arrival documents lodged with port, customs and immigration.',
+      },
+      {
+        title: 'Arrival and berthing',
+        description:
+          'Boarding on arrival, free pratique and inward clearance, cargo operations begin.',
+      },
+      {
+        title: 'During the call',
+        description:
+          'Stores and spares cleared, crew changes handled, surveys attended, owners updated.',
+      },
+      {
+        title: 'Departure',
+        description:
+          'Outward clearance, statement of facts, and the disbursement account to owners.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'What is the difference between a port agent and an owner’s protective agent?',
+        answer:
+          'Under many charter parties the charterer nominates the port agent, who then acts for the charterer’s interests. An owner’s protective agent (OPA) is appointed separately by the shipowner to watch the call on the owner’s behalf — verifying laytime and statements of facts, checking disbursements, and reporting independently. Owners commonly appoint an OPA where the nominated agent is charterer-controlled.',
+      },
+      {
+        question: 'What information does an agent need before arrival?',
+        answer:
+          'Typically the vessel’s particulars and certificates, ETA, crew list with passport details, cargo manifest or stowage plan, last port of call, and any stores, spares, crew change or survey requirements for the call. The earlier these arrive, the more can be arranged before the vessel does.',
+      },
+      {
+        question: 'Which ports in Bangladesh do you cover?',
+        answer:
+          'Chattogram, Mongla, Payra and Matarbari. Chattogram handles the majority of the country’s container traffic; Mongla serves the southwest; Payra and Matarbari are newer deep-sea developments.',
+      },
+      {
+        question: 'How are port disbursements handled?',
+        answer:
+          'A proforma disbursement account is normally issued before arrival so owners can fund the call, with a final account afterwards setting out actual costs against receipts. Ask for the proforma early if the call involves unusual cargo or an extended stay.',
+      },
+    ],
   },
   {
     slug: 'crew-sign-on-off',
@@ -99,6 +171,55 @@ export const SERVICES: readonly Service[] = [
     needsConfirmation: false,
     related: ['shipping-agents', 'ship-husbandry', 'general-ship-supply'],
     conditional: 'crew',
+    detail: [
+      'A crew change has to line up three things that rarely move together: the vessel’s berthing window, immigration clearance for joiners and leavers, and flights. Miss one and the others unravel — a delayed berth can strand a signed-off crew member in a hotel for days, or leave a joiner’s visa expiring before boarding.',
+      'The documentation runs ahead of the people. Joiners normally need a valid passport, seafarer’s identity document, a letter of guarantee or employment from the owner or manager, and a visa where their nationality requires one. Leavers need their discharge book endorsed and onward travel confirmed before immigration will clear them off.',
+      'Where a sign-off is medical or a joiner misses a connection, the plan has to change within hours. That is normally handled by holding the paperwork ready for both outcomes rather than committing to one.',
+    ],
+    process: [
+      {
+        title: 'Requirement received',
+        description:
+          'Crew list, ranks, nationalities, joining or leaving port, and the vessel’s ETA window.',
+      },
+      {
+        title: 'Documents and visas',
+        description:
+          'Immigration submissions prepared, visa requirements checked by nationality, letters of guarantee issued.',
+      },
+      {
+        title: 'Travel and transfer',
+        description:
+          'Flights matched to the berthing window, hotel where required, transfer between airport and vessel.',
+      },
+      {
+        title: 'Boarding and clearance',
+        description:
+          'Joiners cleared aboard, leavers signed off and cleared through immigration for onward travel.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'How much notice do you need for a crew change?',
+        answer:
+          'More notice means more options on flights and visas, and less exposure if the berthing window moves. Nationalities that require a visa are the usual constraint, since processing time is outside anyone’s control — send the crew list as soon as the change is planned rather than when the ETA firms up.',
+      },
+      {
+        question: 'What documents do joining crew need?',
+        answer:
+          'Generally a valid passport, a seafarer’s identity document or seaman’s book, a letter of guarantee or employment from the owner or manager, and a visa if required for their nationality. Requirements vary by nationality and by port, so confirm the specific crew list rather than assuming.',
+      },
+      {
+        question: 'Can crew changes happen at anchorage?',
+        answer:
+          'In many cases yes, by launch boat, though it depends on the port, the anchorage conditions and immigration’s agreement. It is normally arranged where a vessel is not berthing or the berthing window is too short for a shore transfer.',
+      },
+      {
+        question: 'What happens if a flight is missed or the vessel is delayed?',
+        answer:
+          'Both are routine. The usual answer is to hold accommodation and rebook travel against the revised window, and to keep immigration informed so clearances do not lapse. This is why crew changes are quoted against a window rather than a fixed date.',
+      },
+    ],
   },
   {
     slug: 'general-ship-supply',
@@ -124,6 +245,55 @@ export const SERVICES: readonly Service[] = [
     needsConfirmation: false,
     related: ['ship-spares', 'general-repair', 'shipping-agents'],
     conditional: 'supply',
+    detail: [
+      'Ship supply runs on standard catalogues. Most provision and store requisitions are built against the IMPA or ISSA coding systems, which give every item a number so a chief steward in one country and a supplier in another are certain they mean the same thing. Sending a requisition with IMPA codes removes most of the guesswork from a quotation.',
+      'Provisions are the time-critical part. Fresh items have to reach the vessel in condition and within the berthing window, which means cold-chain handling and delivery timed to the call rather than to the order date. Dry and bonded stores are less sensitive but bonded items move under customs seal and need the paperwork to match the manifest exactly.',
+      'Technical stores — deck, engine, electrical and cabin — are usually ordered against the vessel’s own inventory system. Where an item is unavailable locally, the practical options are a substitute of equivalent specification, or sourcing it in for a later call.',
+    ],
+    process: [
+      {
+        title: 'Requisition received',
+        description:
+          'Order against IMPA or ISSA codes where available, with the vessel’s ETA and berth.',
+      },
+      {
+        title: 'Quotation',
+        description:
+          'Priced against the requisition, with substitutes proposed where an item is not available locally.',
+      },
+      {
+        title: 'Sourcing and customs',
+        description:
+          'Items gathered, bonded stores documented, delivery timed to the berthing window.',
+      },
+      {
+        title: 'Delivery aboard',
+        description:
+          'Stores delivered and checked against the requisition, with receipted documentation to the master.',
+      },
+    ],
+    faqs: [
+      {
+        question: 'Do you supply against IMPA and ISSA codes?',
+        answer:
+          'Requisitions built on IMPA or ISSA codes are the clearest way to order, because the code fixes the specification. Where a requisition has no codes, it can still be quoted from descriptions, but expect more back-and-forth to confirm exactly what is meant.',
+      },
+      {
+        question: 'How far in advance should provisions be ordered?',
+        answer:
+          'Fresh provisions are best ordered once the berthing window is reasonably firm, since they are delivered against the call rather than held. Dry, bonded and technical stores can be prepared earlier. Sending the requisition early costs nothing and gives time to propose substitutes for anything unavailable.',
+      },
+      {
+        question: 'What are bonded stores and how are they handled?',
+        answer:
+          'Bonded stores are duty-free items for consumption aboard — typically tobacco, alcohol and some provisions. They move under customs control, so quantities must match the declared manifest and are sealed until the vessel sails. Discrepancies between the delivery and the declaration are the usual cause of delay.',
+      },
+      {
+        question: 'Can you deliver to a vessel at anchorage?',
+        answer:
+          'Generally yes, by launch, subject to port permission and conditions at the anchorage. It is common where a vessel is not berthing or where the berth time is too short to complete a delivery alongside.',
+      },
+    ],
   },
   {
     slug: 'general-repair',
